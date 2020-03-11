@@ -6,7 +6,7 @@ int network_printer(char pdfFileName[])
     struct sockaddr_in serv_addr;
     if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0)
     {
-        printf("Cannot creat socket\n");
+        //printf("Cannot creat socket\n");
         return -10;
     }
     memset(&serv_addr, '0', sizeof(serv_addr));
@@ -15,12 +15,12 @@ int network_printer(char pdfFileName[])
 
     if(inet_pton(AF_INET, ip_address , &serv_addr.sin_addr)<=0)
     {
-        printf("Invalid address/ Address not supported");
+        //printf("Invalid address/ Address not supported");
         return -20;
     }
     if (connect(sock, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
     {
-        printf("Connection Failed");
+        //printf("Connection Failed");
         return -30;
     }
     FILE *image = fopen(pdfFileName,"rb");

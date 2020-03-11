@@ -10,6 +10,10 @@ int fsize(FILE *fp){
 
 void pdfReaderUSB(FILE *printer,char pdfFileName[]) {
     FILE *image = fopen(pdfFileName,"rb");
+    if(image==NULL){
+	printf("Can not open %s\n",pdfFileName);
+	return;
+    }
     long int size = fsize(image);
     fread(record,size,1,image);
     strcat(record,"\f\0\f");
@@ -19,11 +23,13 @@ void pdfReaderUSB(FILE *printer,char pdfFileName[]) {
 
 void pdfReaderNETwork(char pdfFileName[]) {
     FILE *image = fopen(pdfFileName,"rb");
+    if(image==NULL){
+	printf("Can not open %s\n",pdfFileName);
+	return;
+    }
     long int size = fsize(image);
-    printf("%li\n",size);
+    //printf("%li\n",size);
     fread(record,size,1,image);
-    FILE *image1 = fopen("new.pdf","wb");
-    fwrite(record,size,1,image1);
     strcat(record,"\f\0\f");
     fclose(image);
 }

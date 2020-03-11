@@ -17,9 +17,21 @@ int main(int argc, char *argv[])
     {
         strcpy(ip_address,argv[1]);
         port = atoi(argv[2]);
+	if(port == 0){
+	    printf("Enter a valid port\n");
+	    printf("Please use IP port file_name\n");
+	    return 0;
+	}
         strcpy(file_name,argv[3]);
 	//pdfReaderNETwork(file_name);
         status = network_printer(file_name);
+	if(status == -20 ){
+	    printf("Please give a valid IP\n");
+	    printf("Please use IP port file_name\n");
+	}if(status == -30 ){
+	    printf("Cannot connect to the printer\n");
+	    printf("Please use IP port file_name\n");
+	}
     }
 
     //printf("%d\n",argc);
