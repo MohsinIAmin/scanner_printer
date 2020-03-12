@@ -3,6 +3,10 @@
 int main(int argc, char *argv[])
 {
     int status = 0;
+    if(argc == 1){
+	printf("Enter a file name\n");
+	return 0;
+    }
     if(argc == 2)
     {
         strcpy(file_name,argv[1]);
