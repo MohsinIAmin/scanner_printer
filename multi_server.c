@@ -23,7 +23,7 @@ int start_server(int server_port) {
         return -1;
     }
 
-    printf("create socket...\n");
+    // printf("create socket...\n");
     memset(&serv_addr, 0, sizeof(serv_addr));
     serv_addr.sin_family = AF_INET;
     serv_addr.sin_addr.s_addr = INADDR_ANY;
@@ -34,8 +34,10 @@ int start_server(int server_port) {
         return -1;
     }
 
-    printf("binding socket to port %d...\n", portno);
+    // printf("binding socket to port %d...\n", portno);
     listen(sockfd, MAX_CLIENT);
+
+    printf("\nWaiting for new client at port %d\n", portno);
 
     for (;;) {
         addrlen = sizeof(clt_addr);
@@ -56,7 +58,7 @@ int start_server(int server_port) {
             process_request(newsockfd);
             // for (;;)
             //     ;
-            printf("client closed connection\n");
+            printf("\nclient closed connection\n");
             exit(0);
         } else {
             close(newsockfd);

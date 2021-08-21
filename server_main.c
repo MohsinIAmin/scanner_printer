@@ -40,8 +40,8 @@ int main() {
     char printer_ip[16];
     int port_no;
     server_init(printer_ip, &port_no);
-    fprintf(stdout, "Printer IP : %s\n", printer_ip);
-    fprintf(stdout, "Port : %d\n", port_no);
+    fprintf(stdout, "Printer IP : %s\n\n", printer_ip);
+    fprintf(stdout, "Printer Port : %d\n\n", port_no);
 
     char server_ip[16];
     ret = get_ip_address(server_ip);
@@ -52,7 +52,7 @@ int main() {
     fprintf(stdout, "Use Server IP %s To Add Client\n", server_ip);
 
     int server_port;
-    fprintf(stdout, "Enter server port no : ");
+    fprintf(stdout, "\nEnter server port no : ");
     fscanf(stdin, "%d", &server_port);
 
     ret = start_server(server_port);

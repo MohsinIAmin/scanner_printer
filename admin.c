@@ -33,6 +33,7 @@ int add_limit(int client_count, char clients_name[MAX_CLIENT][20], int client_li
     show_list(client_count, clients_name, client_limit);
     printf("Enter index to change limit(c to commit changes): ");
     char buffer[32];
+    fflush(stdin);
     fgets(buffer, 32, stdin);
     buffer[strlen(buffer) - 1] = '\0';
     if (buffer[0] == 'c') {
@@ -45,12 +46,15 @@ int add_limit(int client_count, char clients_name[MAX_CLIENT][20], int client_li
         }
         printf("Enter new limit for %s : ", clients_name[ind]);
         int limit = 0;
-        fscanf(stdin, "%d", &limit);
-        if (limit < 0 && limit > 100) {
+        fflush(stdin);
+        fgets(buffer, 4, stdin);
+        limit = atoi(buffer);
+        if (limit <= 0 && limit > 100) {
             printf("Invalid limit\n");
             return -1;
         }
         client_limit[ind] = limit;
+        return 1;
     }
     return 0;
 }
@@ -68,7 +72,7 @@ int admin(int socket_peer) {
     while (add_limit(client_count, clients_name, client_limit))
         ;
     fp = fopen("admin.txt", "w");
-    fprintf(fp, "%d\n", client_count + 1);
+    fprintf(fp, "%d\n", client_count);
     for (int i = 0; i < client_count; i++) {
         fprintf(fp, "%s %d\n", clients_name[i], client_limit[i]);
     }
@@ -83,7 +87,7 @@ int admin(int socket_peer) {
 
     send(socket_peer, buffer, sz, 0);
 
-    printf("New limits commited to server\n");
+    printf("\nNew limits commited to server\n");
 
     return 0;
 }

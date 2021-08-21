@@ -33,7 +33,6 @@ int get_all_client(int num_client, char clients_name[MAX_CLIENT][20], int client
     fscanf(clients_list, "%d", &client_num);
     for (int i = 0; i < num_client; i++) {
         fscanf(clients_list, "%s%d", clients_name[i], &client_limit[i]);
-        printf("%s %d\n", clients_name[i], client_limit[i]);
     }
     fclose(clients_list);
     return 0;
@@ -66,7 +65,11 @@ void update_client_list(int index, char clients_name[MAX_CLIENT][20], int client
     fprintf(clients_list, "%d\n", num_client);
     for (int i = 0; i < num_client; i++) {
         if (i == index) {
-            fprintf(clients_list, "%s %d\n", clients_name[i], client_limit[i] - 1);
+            if (client_limit[i] <= 0) {
+                fprintf(clients_list, "%s %d\n", clients_name[i], 0);
+            } else {
+                fprintf(clients_list, "%s %d\n", clients_name[i], client_limit[i] - 1);
+            }
         } else {
             fprintf(clients_list, "%s %d\n", clients_name[i], client_limit[i]);
         }
@@ -105,6 +108,9 @@ int process_request(int client_socket) {
             //send(client_limit[index])
             sprintf(buffer, "%03d", client_limit[index]);
             ret = send(client_socket, buffer, 3, 0);
+            if (client_limit[index] <= 0) {
+                return 0;
+            }
         }
 
         ret = recv(client_socket, buffer, 8192, 0);
@@ -114,12 +120,12 @@ int process_request(int client_socket) {
         server_to_printer(buffer);
 
         if (index == -1) {
-            printf("File printed : %s\n", clients_name[num_client]);
+            printf("\nFile printed : %s\n", clients_name[num_client]);
             update_client_list(num_client, clients_name, client_limit);
             sprintf(buffer, "%03d", client_limit[num_client] - 1);
             ret = send(client_socket, buffer, 3, 0);
         } else {
-            printf("File printed : %s\n", clients_name[index]);
+            printf("\nFile printed : %s\n", clients_name[index]);
             update_client_list(index, clients_name, client_limit);
             sprintf(buffer, "%03d", client_limit[index] - 1);
             ret = send(client_socket, buffer, 3, 0);

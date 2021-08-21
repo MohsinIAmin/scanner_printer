@@ -21,7 +21,7 @@ int fsize(FILE *fp) {
 
 int get_file(int sockfd) {
     char file_name[256];
-    printf("Enter File name : ");
+    printf("\nEnter File name : ");
     fscanf(stdin, "%s", file_name);
     FILE *fp;
     if ((fp = fopen(file_name, "r"))) {
@@ -40,7 +40,7 @@ int get_file(int sockfd) {
 
 int printer_client(char server_ip[16], char port_no[6], char client_name[21]) {
     int ret;
-    printf("Configuring remote address...\n");
+    // printf("Configuring remote address...\n");
     struct addrinfo hints;
     memset(&hints, 0, sizeof(hints));
     hints.ai_socktype = SOCK_STREAM;
@@ -50,13 +50,13 @@ int printer_client(char server_ip[16], char port_no[6], char client_name[21]) {
         return -1;
     }
 
-    printf("Remote address is: ");
+    printf("Server address is: ");
     char address_buffer[100];
     char service_buffer[100];
     getnameinfo(peer_address->ai_addr, peer_address->ai_addrlen, address_buffer, sizeof(address_buffer), service_buffer, sizeof(service_buffer), NI_NUMERICHOST);
     printf("%s : %s\n", address_buffer, service_buffer);
 
-    printf("Creating socket...\n");
+    // printf("Creating socket...\n");
     int socket_peer;
     socket_peer = socket(peer_address->ai_family, peer_address->ai_socktype, peer_address->ai_protocol);
     if (socket_peer < 0) {
@@ -71,7 +71,7 @@ int printer_client(char server_ip[16], char port_no[6], char client_name[21]) {
     }
     freeaddrinfo(peer_address);
 
-    printf("Connected..\n");
+    printf("Connected.\n\n");
 
     ret = send(socket_peer, client_name, strlen(client_name), 0);
 
@@ -81,21 +81,26 @@ int printer_client(char server_ip[16], char port_no[6], char client_name[21]) {
         char client_lim[4];
         ret = recv(socket_peer, client_lim, 3, 0);
         int client_limit = atoi(client_lim);
-        printf("You have %d page left.\n", client_limit);
-
-        ret = get_file(socket_peer);
-        if (ret != -1) {
-            printf("File send to printer sucessfully\n");
-
-            ret = recv(socket_peer, client_lim, 3, 0);
-            client_limit = atoi(client_lim);
-            printf("You have %d page left.\n", client_limit);
+        printf("\nYou have %d page left.\n", client_limit);
+        if (client_limit <= 0) {
+            printf("\nYou reached your limit\n");
         } else {
-            printf("Cannot print file\n");
+            ret = get_file(socket_peer);
+
+            if (ret != -1) {
+                printf("\nFile send to printer sucessfully\n");
+
+                ret = recv(socket_peer, client_lim, 3, 0);
+                client_limit = atoi(client_lim);
+                printf("\nYou have %d page left.\n", client_limit);
+
+            } else {
+                printf("\nCannot print file\n");
+            }
         }
     }
 
-    printf("Closing socket...\n");
+    printf("\nClosing connection.\n");
     close(socket_peer);
 
     return 0;
