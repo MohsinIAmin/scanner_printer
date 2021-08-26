@@ -117,17 +117,25 @@ int process_request(int client_socket) {
 
         //send to printer
 
-        server_to_printer(buffer);
+        ret = server_to_printer(buffer);
 
         if (index == -1) {
             printf("\nFile printed : %s\n", clients_name[num_client]);
-            update_client_list(num_client, clients_name, client_limit);
-            sprintf(buffer, "%03d", client_limit[num_client] - 1);
+            if (ret == 0) {
+                update_client_list(num_client, clients_name, client_limit);
+                sprintf(buffer, "%03d", client_limit[num_client] - 1);
+            } else {
+                sprintf(buffer, "%03d", client_limit[num_client]);
+            }
             ret = send(client_socket, buffer, 3, 0);
         } else {
             printf("\nFile printed : %s\n", clients_name[index]);
-            update_client_list(index, clients_name, client_limit);
-            sprintf(buffer, "%03d", client_limit[index] - 1);
+            if (ret == 0) {
+                update_client_list(index, clients_name, client_limit);
+                sprintf(buffer, "%03d", client_limit[index] - 1);
+            } else {
+                sprintf(buffer, "%03d", client_limit[index]);
+            }
             ret = send(client_socket, buffer, 3, 0);
         }
     }

@@ -91,9 +91,12 @@ int printer_client(char server_ip[16], char port_no[6], char client_name[21]) {
                 printf("\nFile send to printer sucessfully\n");
 
                 ret = recv(socket_peer, client_lim, 3, 0);
-                client_limit = atoi(client_lim);
-                printf("\nYou have %d page left.\n", client_limit);
-
+                int new_client_limit = atoi(client_lim);
+                if (new_client_limit == client_limit) {
+                    printf("\nCannot print file\nYou have %d page left.\n", new_client_limit);
+                } else {
+                    printf("\nYou have %d page left.\n", client_limit);
+                }
             } else {
                 printf("\nCannot print file\n");
             }
